@@ -1,0 +1,6 @@
+{
+  "name": "C++ Cross-Platform Media Downloader Studio",
+  "description": "yt-dlpとFFmpegを用いたC++製動画メタデータ抽出・自動命名ダウンローダー。YouTube・Bilibili対応、Windows・Debian Linux・Android（Termux）向けCMake統合ビルド環境とGitHub Actions自動ビルド設計。",
+  "requestFramePermissions": [],
+  "majorCapabilities": ["MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"]
+}
