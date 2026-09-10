@@ -1,0 +1,19 @@
+/* 
+  最高画質ダウンローダー
+  カスタムスタイルシート
+*/
+
+body {
+    scroll-behavior: smooth;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+}
+
+/* スクロールバーを隠す (必要に応じて) */
+.no-scrollbar::-webkit-scrollbar {
+    display: none;
+}
+.no-scrollbar {
+    -ms-overflow-style: none;
+    scrollbar-width: none;
+}

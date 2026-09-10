@@ -1,36 +1,135 @@
-<!doctype html>
-<html lang="en">
-  <head>
-    <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>C++ Cross-Platform Media Downloader Studio</title>
-    <!-- GitHub Pages / ローカルファイル用 自動リダイレクト (Vanilla JSフォールバック) -->
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>最高画質ダウンローダー</title>
+    
+    <!-- Tailwind CSS (CDN) -->
+    <script src="https://cdn.tailwindcss.com"></script>
     <script>
-      (function() {
-        var isGitHubPages = window.location.hostname.includes('github.io');
-        var isFileProto = window.location.protocol === 'file:';
-        if (isGitHubPages || isFileProto) {
-          var newUrl = window.location.href.split('#')[0].split('?')[0];
-          if (!newUrl.endsWith('/')) {
-            if (newUrl.endsWith('index.html')) {
-              newUrl = newUrl.replace('index.html', '');
-            } else {
-              newUrl += '/';
+        tailwind.config = {
+            theme: {
+                extend: {
+                    fontFamily: {
+                        sans: ['ui-sans-serif', 'system-ui', 'sans-serif'],
+                        mono: ['ui-monospace', 'SFMono-Regular', 'monospace'],
+                    }
+                }
             }
-          }
-          window.location.replace(newUrl + 'docs/index.html');
         }
-      })();
     </script>
-    <meta name="description" content="yt-dlpとFFmpegを用いたC++製動画メタデータ抽出・自動命名ダウンローダー。YouTube・Bilibili対応、Windows・Debian Linux・Android（Termux）向けCMake統合ビルド環境とGitHub Actions自動ビルド設計。" />
-    <meta property="og:title" content="C++ Cross-Platform Media Downloader Studio" />
-    <meta property="og:description" content="yt-dlpとFFmpegを用いたC++製動画メタデータ抽出・自動命名ダウンローダー。YouTube・Bilibili対応、Windows・Debian Linux・Android（Termux）向けCMake統合ビルド環境とGitHub Actions自動ビルド設計。" />
-    <meta property="og:type" content="website" />
-    <meta name="twitter:card" content="summary_large_image" />
-  </head>
-  <body>
-    <div id="root"></div>
-    <script type="module" src="/src/main.tsx"></script>
-  </body>
-</html>
+    
+    <!-- Custom CSS -->
+    <link rel="stylesheet" href="style.css">
+    
+    <!-- Icons & JSZip -->
+    <script src="https://unpkg.com/lucide@latest"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jszip/3.10.1/jszip.min.js"></script>
+</head>
+<body class="min-h-screen bg-[#030303] text-cyan-50 font-sans selection:bg-cyan-500/30 relative pb-32">
+    <!-- Background -->
+    <div class="fixed inset-0 pointer-events-none bg-[radial-gradient(ellipse_at_top,_var(--tw-gradient-stops))] from-cyan-900/15 via-[#030303] to-[#030303] z-0"></div>
 
+    <!-- Floating Action Button -->
+    <button id="fab-download" class="fixed bottom-10 left-1/2 -translate-x-1/2 z-50 flex items-center justify-center gap-3 px-8 py-4 bg-cyan-500 hover:bg-cyan-400 text-black rounded-full font-black text-lg shadow-[0_0_30px_rgba(34,211,238,0.4)] transition-transform hover:scale-105 active:scale-95 whitespace-nowrap cursor-pointer">
+        <i data-lucide="download" class="w-6 h-6"></i>
+        <span>今すぐダウンロード</span>
+    </button>
+
+    <main class="relative z-10 flex flex-col items-center justify-center px-4 py-20 mx-auto max-w-4xl space-y-32">
+        
+        <!-- Hero Section -->
+        <section class="text-center space-y-8 w-full flex flex-col items-center mt-10">
+            <div class="inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-cyan-950/50 border border-cyan-800 text-cyan-400 text-xs font-bold tracking-widest uppercase mb-4 shadow-[0_0_15px_rgba(34,211,238,0.2)]">
+                <i data-lucide="zap" class="w-4 h-4 fill-cyan-400"></i>
+                <span>100% Free & No Ads</span>
+            </div>
+            <h1 class="text-4xl md:text-6xl lg:text-7xl font-black text-transparent bg-clip-text bg-gradient-to-b from-white via-white to-cyan-300 tracking-tight leading-tight">
+                URLを貼るだけ。<br />最高画質ダウンローダー
+            </h1>
+            <p class="text-cyan-100/70 text-lg md:text-xl max-w-2xl leading-relaxed">
+                YouTubeやBilibiliの動画をワンクリックで保存。煩わしい設定は一切不要で、「タイトル - 投稿者名」できれいに自動整理されます。
+            </p>
+        </section>
+
+        <!-- Features -->
+        <section class="w-full grid grid-cols-1 md:grid-cols-3 gap-6 text-center">
+            <div class="p-8 rounded-3xl bg-black/40 border border-cyan-900/30 backdrop-blur-md">
+                <div class="w-14 h-14 rounded-2xl bg-cyan-900/40 flex items-center justify-center mx-auto mb-6 text-cyan-400 font-black text-2xl border border-cyan-500/20">1</div>
+                <h3 class="text-lg font-bold text-white mb-3">URLをコピー</h3>
+                <p class="text-sm text-cyan-200/60 leading-relaxed">保存したい動画のURLをブラウザやアプリからコピーします。</p>
+            </div>
+            <div class="p-8 rounded-3xl bg-black/40 border border-cyan-900/30 backdrop-blur-md">
+                <div class="w-14 h-14 rounded-2xl bg-cyan-900/40 flex items-center justify-center mx-auto mb-6 text-cyan-400 font-black text-2xl border border-cyan-500/20">2</div>
+                <h3 class="text-lg font-bold text-white mb-3">アプリに入力</h3>
+                <p class="text-sm text-cyan-200/60 leading-relaxed">専用の画面を開き、コピーしたURLをそのまま貼り付けます。</p>
+            </div>
+            <div class="p-8 rounded-3xl bg-black/40 border border-cyan-900/30 backdrop-blur-md">
+                <div class="w-14 h-14 rounded-2xl bg-cyan-500/20 flex items-center justify-center mx-auto mb-6 text-cyan-300 font-black text-2xl border border-cyan-400/50 shadow-[0_0_15px_rgba(34,211,238,0.3)]">3</div>
+                <h3 class="text-lg font-bold text-white mb-3">自動で保存完了</h3>
+                <p class="text-sm text-cyan-200/60 leading-relaxed">画質や音質が自動で最高設定になり、PCやスマホに保存されます。</p>
+            </div>
+        </section>
+
+        <!-- Download Section -->
+        <section id="download-section" class="w-full max-w-2xl flex flex-col items-center p-8 md:p-12 rounded-[2rem] bg-black/60 border border-cyan-900/50 shadow-[0_0_50px_rgba(6,182,212,0.1)] backdrop-blur-xl relative overflow-hidden">
+            <div class="absolute top-0 left-1/2 -translate-x-1/2 w-1/2 h-1 bg-gradient-to-r from-transparent via-cyan-400 to-transparent"></div>
+
+            <h2 class="text-3xl font-black text-white mb-10 text-center tracking-tight">ダウンロード</h2>
+
+            <!-- Platform Selector -->
+            <div class="w-full space-y-4 mb-8">
+                <label class="block text-xs font-bold text-cyan-500 uppercase tracking-widest text-center">1. お使いの端末を選択</label>
+                <div class="grid grid-cols-3 gap-2 p-1.5 bg-[#030303] border border-cyan-900/40 rounded-2xl">
+                    <button data-platform="windows" class="platform-btn flex flex-col items-center gap-3 py-4 rounded-xl transition-all bg-cyan-950/80 border border-cyan-400 text-cyan-300 shadow-[0_0_15px_rgba(34,211,238,0.2)]">
+                        <i data-lucide="monitor" class="w-6 h-6"></i>
+                        <span class="text-sm font-bold">Windows</span>
+                    </button>
+                    <button data-platform="linux" class="platform-btn flex flex-col items-center gap-3 py-4 rounded-xl transition-all text-cyan-700 hover:text-cyan-400 hover:bg-cyan-950/30 border border-transparent">
+                        <i data-lucide="terminal" class="w-6 h-6"></i>
+                        <span class="text-sm font-bold">Linux</span>
+                    </button>
+                    <button data-platform="android" class="platform-btn flex flex-col items-center gap-3 py-4 rounded-xl transition-all text-cyan-700 hover:text-cyan-400 hover:bg-cyan-950/30 border border-transparent">
+                        <i data-lucide="smartphone" class="w-6 h-6"></i>
+                        <span class="text-sm font-bold">Android</span>
+                    </button>
+                </div>
+            </div>
+
+            <!-- Edition Selector -->
+            <div class="w-full space-y-4 mb-10">
+                <label class="block text-xs font-bold text-cyan-500 uppercase tracking-widest text-center">2. 画面のタイプを選択</label>
+                <div class="grid grid-cols-2 gap-2 p-1.5 bg-[#030303] border border-cyan-900/40 rounded-2xl">
+                    <button data-edition="gui" class="edition-btn flex items-center justify-center gap-2 py-4 rounded-xl transition-all bg-cyan-950/80 border border-cyan-400 text-cyan-300 shadow-[0_0_15px_rgba(34,211,238,0.2)]">
+                        <span class="text-sm font-bold">GUI (ウィンドウ操作)</span>
+                    </button>
+                    <button data-edition="cli" class="edition-btn flex items-center justify-center gap-2 py-4 rounded-xl transition-all text-cyan-700 hover:text-cyan-400 hover:bg-cyan-950/30 border border-transparent">
+                        <span class="text-sm font-bold">CLI (黒い画面)</span>
+                    </button>
+                </div>
+            </div>
+
+            <!-- Instruction Panel -->
+            <div class="w-full bg-[#030303] rounded-2xl border border-cyan-900/30 p-6 mb-8 text-left">
+                <h4 class="font-bold text-white mb-4 flex items-center gap-2 text-sm">
+                    <i data-lucide="check-circle-2" class="w-4 h-4 text-cyan-400"></i>
+                    インストール手順
+                </h4>
+                <div id="instruction-content">
+                    <!-- Injected by JS -->
+                </div>
+            </div>
+
+            <!-- Download Action Button -->
+            <button id="main-download-btn" class="w-full flex items-center justify-center gap-3 py-5 bg-cyan-500 hover:bg-cyan-400 active:bg-cyan-600 text-black rounded-xl font-black text-lg transition-all shadow-[0_0_20px_rgba(34,211,238,0.3)] hover:shadow-[0_0_30px_rgba(34,211,238,0.5)] disabled:opacity-50 disabled:cursor-not-allowed">
+                <i data-lucide="download" class="w-6 h-6"></i>
+                <span id="download-text">ファイルをダウンロードする</span>
+            </button>
+        </section>
+    </main>
+
+    <!-- Custom Logic -->
+    <script src="script.js"></script>
+</body>
+</html>
