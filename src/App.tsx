@@ -1,37 +1,24 @@
 import { useState } from 'react';
-import {
-  CodeViewer
-} from './components/CodeViewer';
-import {
-  UrlTester
-} from './components/UrlTester';
-import {
-  PlatformGuide
-} from './components/PlatformGuide';
-import {
-  ArchitectureFlow
-} from './components/ArchitectureFlow';
-import {
-  FolderArchive,
-  Terminal,
-  FileCode,
-  Layers,
-  Sparkles,
-  Github,
-  Video,
-  ExternalLink,
-  Laptop,
-  CheckCircle2,
-  BookOpen
-} from 'lucide-react';
+import { Download, Monitor, Terminal, Smartphone, Zap, CheckCircle2 } from 'lucide-react';
 import JSZip from 'jszip';
 import { CPP_PROJECT_FILES } from './data/cppProjectFiles';
 
+type Platform = 'windows' | 'linux' | 'android';
+type Edition = 'gui' | 'cli';
+
 export default function App() {
-  const [activeTab, setActiveTab] = useState<'code' | 'tester' | 'guide' | 'arch'>('tester');
+  const [platform, setPlatform] = useState<Platform>('windows');
+  const [edition, setEdition] = useState<Edition>('gui');
   const [isZipping, setIsZipping] = useState(false);
 
-  const handleDownloadAllZip = async () => {
+  const handlePlatformChange = (p: Platform) => {
+    setPlatform(p);
+    if (p !== 'windows') {
+      setEdition('cli');
+    }
+  };
+
+  const handleDownload = async () => {
     try {
       setIsZipping(true);
       const zip = new JSZip();
@@ -42,7 +29,7 @@ export default function App() {
       const url = URL.createObjectURL(blob);
       const a = document.createElement('a');
       a.href = url;
-      a.download = 'media-fetcher-cpp-cmake.zip';
+      a.download = 'media-downloader.zip';
       document.body.appendChild(a);
       a.click();
       document.body.removeChild(a);
@@ -54,196 +41,136 @@ export default function App() {
     }
   };
 
+  const scrollToDownload = () => {
+    document.getElementById('download-section')?.scrollIntoView({ behavior: 'smooth' });
+  };
+
   return (
-    <div className="min-h-screen bg-[#09090b] text-cyan-50 font-sans flex flex-col antialiased selection:bg-fuchsia-500/40 selection:text-fuchsia-100 relative overflow-hidden">
-      {/* Background Cyberpunk Grid/Glow */}
-      <div className="fixed inset-0 pointer-events-none bg-[radial-gradient(ellipse_at_top_right,_var(--tw-gradient-stops))] from-cyan-900/20 via-[#09090b] to-[#09090b] z-0"></div>
-      
-      {/* Top Navbar */}
-      <header className="bg-black/60 backdrop-blur-md border-b border-cyan-500/30 sticky top-0 z-30 shadow-[0_0_15px_rgba(6,182,212,0.2)]">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-16 flex items-center justify-between gap-4">
-          <div className="flex items-center gap-3">
-            <div className="w-10 h-10 rounded bg-black border border-cyan-400 flex items-center justify-center text-cyan-400 shadow-[0_0_10px_rgba(34,211,238,0.5)] font-mono font-bold text-sm">
-              C++
-            </div>
-            <div>
-              <div className="flex items-center gap-2">
-                <h1 className="text-sm sm:text-base font-bold text-transparent bg-clip-text bg-gradient-to-r from-cyan-400 to-fuchsia-500 tracking-wider uppercase break-words">
-                  C++ Media Downloader Studio
-                </h1>
-                <span className="hidden sm:inline-block text-[11px] font-mono px-2 py-0.5 rounded bg-fuchsia-500/10 border border-fuchsia-500/50 text-fuchsia-400 uppercase tracking-widest shadow-[0_0_8px_rgba(217,70,239,0.3)]">
-                  yt-dlp & FFmpeg
-                </span>
-              </div>
-              <p className="text-[11px] text-cyan-200/70 font-mono tracking-wide break-words whitespace-pre-wrap">
-                YouTube & Bilibili // AUTO NAMING // Windows / Debian / Termux
-              </p>
-            </div>
-          </div>
+    <div className="min-h-screen bg-[#030303] text-cyan-50 font-sans selection:bg-cyan-500/30 relative pb-32">
+      {/* Background */}
+      <div className="fixed inset-0 pointer-events-none bg-[radial-gradient(ellipse_at_top,_var(--tw-gradient-stops))] from-cyan-900/15 via-[#030303] to-[#030303] z-0"></div>
 
-          <div className="flex items-center gap-2 flex-wrap justify-end">
-            <button
-              onClick={() => {
-                setActiveTab('guide');
-                document.getElementById('windows-guide')?.scrollIntoView({ behavior: 'smooth' });
-              }}
-              className="flex items-center gap-2 px-3 py-1.5 sm:px-4 sm:py-2 bg-fuchsia-600 hover:bg-fuchsia-500 active:bg-fuchsia-700 text-white rounded text-xs font-bold uppercase tracking-wider shadow-[0_0_15px_rgba(217,70,239,0.4)] transition-all cursor-pointer whitespace-nowrap"
-            >
-              <Laptop className="w-4 h-4" />
-              <span className="hidden sm:inline">WINDOWS版 (GUI) を使う</span>
-              <span className="sm:hidden">WIN GUI</span>
-            </button>
-            <button
-              id="header-zip-download-button"
-              onClick={handleDownloadAllZip}
-              disabled={isZipping}
-              className="flex items-center gap-2 px-3 py-1.5 sm:px-4 sm:py-2 bg-yellow-400 hover:bg-yellow-300 active:bg-yellow-500 text-black rounded text-xs font-bold uppercase tracking-wider shadow-[0_0_15px_rgba(250,204,21,0.4)] transition-all cursor-pointer disabled:opacity-50 whitespace-nowrap"
-            >
-              <FolderArchive className="w-4 h-4" />
-              <span className="hidden sm:inline">
-                {isZipping ? 'GENERATING...' : 'ソースコードを一括DL'}
-              </span>
-              <span className="sm:hidden">ZIP</span>
-            </button>
-          </div>
-        </div>
-      </header>
+      {/* Floating Action Button */}
+      <button
+        onClick={scrollToDownload}
+        className="fixed bottom-10 left-1/2 -translate-x-1/2 z-50 flex items-center justify-center gap-3 px-8 py-4 bg-cyan-500 hover:bg-cyan-400 text-black rounded-full font-black text-lg shadow-[0_0_30px_rgba(34,211,238,0.4)] transition-transform hover:scale-105 active:scale-95 whitespace-nowrap"
+      >
+        <Download className="w-6 h-6" />
+        <span>今すぐダウンロード</span>
+      </button>
 
-      {/* Main Container */}
-      <main className="flex-1 max-w-7xl w-full mx-auto px-4 sm:px-6 lg:px-8 py-8 space-y-8 relative z-10">
+      <main className="relative z-10 flex flex-col items-center justify-center px-4 py-20 mx-auto max-w-4xl space-y-32">
         
-        {/* Beginner Alert */}
-        <div className="bg-cyan-950/40 border border-cyan-500/50 rounded-lg p-5 flex items-start gap-4 backdrop-blur-md shadow-[0_0_15px_rgba(34,211,238,0.2)]">
-          <Sparkles className="w-5 h-5 text-cyan-400 flex-shrink-0 mt-0.5" />
-          <div className="space-y-1.5">
-            <h2 className="text-sm font-bold text-cyan-300 break-words">初心者の方へ：GitHub Pagesで自動公開に対応しました！</h2>
-            <p className="text-xs text-cyan-100/80 leading-relaxed font-mono break-words whitespace-pre-wrap">
-              このプロジェクトをGitHubにアップロード（Push）するだけで、裏側で自動的にビルドが走り、GitHub PagesとしてWebサイトが公開されます。複雑な設定やJSでの書き換えは一切不要です！
-            </p>
+        {/* Hero Section */}
+        <section className="text-center space-y-8 w-full flex flex-col items-center mt-10">
+          <div className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-cyan-950/50 border border-cyan-800 text-cyan-400 text-xs font-bold tracking-widest uppercase mb-4 shadow-[0_0_15px_rgba(34,211,238,0.2)]">
+            <Zap className="w-4 h-4 fill-cyan-400" />
+            <span>100% Free & No Ads</span>
           </div>
-        </div>
+          <h1 className="text-4xl md:text-6xl lg:text-7xl font-black text-transparent bg-clip-text bg-gradient-to-b from-white via-white to-cyan-300 tracking-tight leading-tight">
+            URLを貼るだけ。<br />最高画質ダウンローダー
+          </h1>
+          <p className="text-cyan-100/70 text-lg md:text-xl max-w-2xl leading-relaxed">
+            YouTubeやBilibiliの動画をワンクリックで保存。煩わしい設定は一切不要で、「タイトル - 投稿者名」できれいに自動整理されます。
+          </p>
+        </section>
 
-        {/* Navigation Tabs */}
-        <div className="flex items-center gap-2 p-1.5 bg-black/40 border border-cyan-900/50 rounded overflow-x-auto text-xs font-mono uppercase tracking-wider backdrop-blur-sm scrollbar-hide">
-          <button
-            onClick={() => setActiveTab('tester')}
-            className={`flex items-center gap-2 px-4 py-2.5 rounded transition-all whitespace-nowrap cursor-pointer flex-shrink-0 ${
-              activeTab === 'tester'
-                ? 'bg-cyan-500/20 text-cyan-300 border border-cyan-400 shadow-[0_0_10px_rgba(34,211,238,0.3)]'
-                : 'text-cyan-500/70 border border-transparent hover:text-cyan-300 hover:bg-cyan-950/40'
-            }`}
-          >
-            <Video className="w-4 h-4" />
-            <span>URL Tester</span>
-          </button>
-
-          <button
-            onClick={() => setActiveTab('code')}
-            className={`flex items-center gap-2 px-4 py-2.5 rounded transition-all whitespace-nowrap cursor-pointer ${
-              activeTab === 'code'
-                ? 'bg-cyan-500/20 text-cyan-300 border border-cyan-400 shadow-[0_0_10px_rgba(34,211,238,0.3)]'
-                : 'text-cyan-500/70 border border-transparent hover:text-cyan-300 hover:bg-cyan-950/40'
-            }`}
-          >
-            <FileCode className="w-4 h-4" />
-            <span>Source Code</span>
-          </button>
-
-          <button
-            onClick={() => setActiveTab('guide')}
-            className={`flex items-center gap-2 px-4 py-2.5 rounded transition-all whitespace-nowrap cursor-pointer ${
-              activeTab === 'guide'
-                ? 'bg-cyan-500/20 text-cyan-300 border border-cyan-400 shadow-[0_0_10px_rgba(34,211,238,0.3)]'
-                : 'text-cyan-500/70 border border-transparent hover:text-cyan-300 hover:bg-cyan-950/40'
-            }`}
-          >
-            <Laptop className="w-4 h-4" />
-            <span>Install Guide</span>
-          </button>
-
-          <button
-            onClick={() => setActiveTab('arch')}
-            className={`flex items-center gap-2 px-4 py-2.5 rounded transition-all whitespace-nowrap cursor-pointer ${
-              activeTab === 'arch'
-                ? 'bg-cyan-500/20 text-cyan-300 border border-cyan-400 shadow-[0_0_10px_rgba(34,211,238,0.3)]'
-                : 'text-cyan-500/70 border border-transparent hover:text-cyan-300 hover:bg-cyan-950/40'
-            }`}
-          >
-            <Layers className="w-4 h-4" />
-            <span>Architecture</span>
-          </button>
-        </div>
-
-        {/* Dynamic Tab Content */}
-        {activeTab === 'tester' && (
-          <div className="space-y-6">
-            <UrlTester />
-            <ArchitectureFlow />
+        {/* How to use / Features */}
+        <section className="w-full grid grid-cols-1 md:grid-cols-3 gap-6 text-center">
+          <div className="p-8 rounded-3xl bg-black/40 border border-cyan-900/30 backdrop-blur-md">
+            <div className="w-14 h-14 rounded-2xl bg-cyan-900/40 flex items-center justify-center mx-auto mb-6 text-cyan-400 font-black text-2xl border border-cyan-500/20">1</div>
+            <h3 className="text-lg font-bold text-white mb-3">URLをコピー</h3>
+            <p className="text-sm text-cyan-200/60 leading-relaxed">保存したい動画のURLをブラウザやアプリからコピーします。</p>
           </div>
-        )}
-
-        {activeTab === 'code' && (
-          <div className="space-y-6">
-            <CodeViewer />
+          <div className="p-8 rounded-3xl bg-black/40 border border-cyan-900/30 backdrop-blur-md">
+            <div className="w-14 h-14 rounded-2xl bg-cyan-900/40 flex items-center justify-center mx-auto mb-6 text-cyan-400 font-black text-2xl border border-cyan-500/20">2</div>
+            <h3 className="text-lg font-bold text-white mb-3">アプリに入力</h3>
+            <p className="text-sm text-cyan-200/60 leading-relaxed">専用の画面を開き、コピーしたURLをそのまま貼り付けます。</p>
           </div>
-        )}
-
-        {activeTab === 'guide' && (
-          <div className="space-y-6">
-            <PlatformGuide />
+          <div className="p-8 rounded-3xl bg-black/40 border border-cyan-900/30 backdrop-blur-md">
+            <div className="w-14 h-14 rounded-2xl bg-cyan-500/20 flex items-center justify-center mx-auto mb-6 text-cyan-300 font-black text-2xl border border-cyan-400/50 shadow-[0_0_15px_rgba(34,211,238,0.3)]">3</div>
+            <h3 className="text-lg font-bold text-white mb-3">自動で保存完了</h3>
+            <p className="text-sm text-cyan-200/60 leading-relaxed">画質や音質が自動で最高設定になり、PCやスマホに保存されます。</p>
           </div>
-        )}
+        </section>
 
-        {activeTab === 'arch' && (
-          <div className="space-y-6">
-            <ArchitectureFlow />
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-              <div className="bg-black/60 border border-cyan-900/50 rounded p-5 space-y-3 shadow-[0_0_15px_rgba(6,182,212,0.1)] backdrop-blur-sm relative overflow-hidden group">
-                <div className="absolute top-0 left-0 w-1 h-full bg-fuchsia-500 group-hover:shadow-[0_0_10px_rgba(217,70,239,0.8)] transition-all"></div>
-                <h4 className="text-sm font-bold text-fuchsia-400 flex items-center gap-2 uppercase tracking-wide">
-                  <CheckCircle2 className="w-4 h-4" />
-                  <span>なぜスペースとハイフン ( - ) による自動命名なのか？</span>
-                </h4>
-                <p className="text-sm text-cyan-200/70 leading-relaxed font-mono">
-                  YouTubeやBilibiliから動画を取得する際、通常は動画IDや英数字のみがファイル名になりがちです。
-                  本プログラムは <code className="text-fuchsia-300 bg-fuchsia-900/30 px-1 py-0.5 rounded">yt-dlp --dump-single-json</code> から
-                  タイトルと投稿者名を抽出し、
-                  <code className="text-cyan-300 bg-cyan-900/30 px-1 py-0.5 rounded ml-1">タイトル - 投稿者名.mp4</code> として結合します。
-                  さらに、ファイル名として使えない禁止文字を自動サニタイズするため、OSエラーが一切発生しません。
-                </p>
-              </div>
+        {/* Download Section */}
+        <section id="download-section" className="w-full max-w-2xl flex flex-col items-center p-8 md:p-12 rounded-[2rem] bg-black/60 border border-cyan-900/50 shadow-[0_0_50px_rgba(6,182,212,0.1)] backdrop-blur-xl relative overflow-hidden">
+          <div className="absolute top-0 left-1/2 -translate-x-1/2 w-1/2 h-1 bg-gradient-to-r from-transparent via-cyan-400 to-transparent"></div>
 
-              <div className="bg-black/60 border border-cyan-900/50 rounded p-5 space-y-3 shadow-[0_0_15px_rgba(6,182,212,0.1)] backdrop-blur-sm relative overflow-hidden group">
-                <div className="absolute top-0 left-0 w-1 h-full bg-cyan-500 group-hover:shadow-[0_0_10px_rgba(34,211,238,0.8)] transition-all"></div>
-                <h4 className="text-sm font-bold text-cyan-400 flex items-center gap-2 uppercase tracking-wide">
-                  <CheckCircle2 className="w-4 h-4" />
-                  <span>初心者でも絶対にコンパイルできる仕組み</span>
-                </h4>
-                <p className="text-sm text-cyan-200/70 leading-relaxed font-mono">
-                  C++初心者が最も挫折しやすい原因は「外部ライブラリの手動ダウンロードとパス設定」です。
-                  本設計ではCMake標準の <code className="text-cyan-300 bg-cyan-900/30 px-1 py-0.5 rounded">FetchContent</code> を採用しているため、
-                  初回ビルド時に JSONパーサーがGitHubから全自動で取得・構成されます。
-                  ユーザーは <code className="text-yellow-300 bg-yellow-900/30 px-1 py-0.5 rounded mt-1 inline-block">cmake -B build && cmake --build build</code> を実行するだけで完成します。
-                </p>
-              </div>
+          <h2 className="text-3xl font-black text-white mb-10 text-center tracking-tight">ダウンロード</h2>
+
+          {/* Platform Selector */}
+          <div className="w-full space-y-4 mb-8">
+            <label className="block text-xs font-bold text-cyan-500 uppercase tracking-widest text-center">1. お使いの端末を選択</label>
+            <div className="grid grid-cols-3 gap-2 p-1.5 bg-[#030303] border border-cyan-900/40 rounded-2xl">
+              <button onClick={() => handlePlatformChange('windows')} className={`flex flex-col items-center gap-3 py-4 rounded-xl transition-all ${platform === 'windows' ? 'bg-cyan-950/80 border border-cyan-400 text-cyan-300 shadow-[0_0_15px_rgba(34,211,238,0.2)]' : 'text-cyan-700 hover:text-cyan-400 hover:bg-cyan-950/30 border border-transparent'}`}><Monitor className="w-6 h-6" /> <span className="text-sm font-bold">Windows</span></button>
+              <button onClick={() => handlePlatformChange('linux')} className={`flex flex-col items-center gap-3 py-4 rounded-xl transition-all ${platform === 'linux' ? 'bg-cyan-950/80 border border-cyan-400 text-cyan-300 shadow-[0_0_15px_rgba(34,211,238,0.2)]' : 'text-cyan-700 hover:text-cyan-400 hover:bg-cyan-950/30 border border-transparent'}`}><Terminal className="w-6 h-6" /> <span className="text-sm font-bold">Linux</span></button>
+              <button onClick={() => handlePlatformChange('android')} className={`flex flex-col items-center gap-3 py-4 rounded-xl transition-all ${platform === 'android' ? 'bg-cyan-950/80 border border-cyan-400 text-cyan-300 shadow-[0_0_15px_rgba(34,211,238,0.2)]' : 'text-cyan-700 hover:text-cyan-400 hover:bg-cyan-950/30 border border-transparent'}`}><Smartphone className="w-6 h-6" /> <span className="text-sm font-bold">Android</span></button>
             </div>
           </div>
-        )}
-      </main>
 
-      {/* Footer */}
-      <footer className="bg-black/80 border-t border-cyan-900/50 py-6 text-center text-xs text-cyan-500/60 font-mono tracking-widest relative z-10">
-        <div className="max-w-7xl mx-auto px-4 flex flex-col sm:flex-row items-center justify-between gap-3">
-          <div className="flex items-center gap-2">
-            <span className="uppercase">C++ Cross-Platform Media Downloader</span>
-            <span className="text-cyan-800">///</span>
-            <span className="text-fuchsia-400 font-bold shadow-[0_0_5px_rgba(217,70,239,0.3)]">100% FREE & OPEN SOURCE</span>
+          {/* Edition Selector */}
+          <div className="w-full space-y-4 mb-10">
+            <label className="block text-xs font-bold text-cyan-500 uppercase tracking-widest text-center">2. 画面のタイプを選択</label>
+            <div className="grid grid-cols-2 gap-2 p-1.5 bg-[#030303] border border-cyan-900/40 rounded-2xl">
+              <button onClick={() => setEdition('gui')} disabled={platform !== 'windows'} className={`flex items-center justify-center gap-2 py-4 rounded-xl transition-all disabled:opacity-20 disabled:cursor-not-allowed ${edition === 'gui' && platform === 'windows' ? 'bg-cyan-950/80 border border-cyan-400 text-cyan-300 shadow-[0_0_15px_rgba(34,211,238,0.2)]' : 'text-cyan-700 hover:text-cyan-400 hover:bg-cyan-950/30 border border-transparent'}`}>
+                <span className="text-sm font-bold">GUI (ウィンドウ操作)</span>
+              </button>
+              <button onClick={() => setEdition('cli')} className={`flex items-center justify-center gap-2 py-4 rounded-xl transition-all ${edition === 'cli' ? 'bg-cyan-950/80 border border-cyan-400 text-cyan-300 shadow-[0_0_15px_rgba(34,211,238,0.2)]' : 'text-cyan-700 hover:text-cyan-400 hover:bg-cyan-950/30 border border-transparent'}`}>
+                <span className="text-sm font-bold">CLI (黒い画面)</span>
+              </button>
+            </div>
           </div>
-          <div>
-            <span className="uppercase text-[10px]">YouTube & Bilibili // Windows / Debian Linux / Android (Termux)</span>
+
+          {/* Instruction Panel */}
+          <div className="w-full bg-[#030303] rounded-2xl border border-cyan-900/30 p-6 mb-8 text-left">
+            <h4 className="font-bold text-white mb-4 flex items-center gap-2 text-sm">
+              <CheckCircle2 className="w-4 h-4 text-cyan-400" />
+              インストール手順
+            </h4>
+            {platform === 'windows' && edition === 'gui' && (
+              <ol className="space-y-3 text-sm text-cyan-100/70 leading-relaxed list-decimal list-inside marker:text-cyan-500 marker:font-bold">
+                <li>ページ下のボタンからZIPをダウンロードし「すべて展開」します。</li>
+                <li>ネットから <code className="text-cyan-300 bg-cyan-950/50 px-1.5 py-0.5 rounded border border-cyan-900/50">yt-dlp.exe</code> と <code className="text-cyan-300 bg-cyan-950/50 px-1.5 py-0.5 rounded border border-cyan-900/50">ffmpeg.exe</code> をダウンロードし、展開したフォルダに入れます。</li>
+                <li><code className="text-cyan-300 bg-cyan-950/50 px-1.5 py-0.5 rounded border border-cyan-900/50">start_windows_gui.bat</code> をダブルクリックすると画面が開きます。</li>
+              </ol>
+            )}
+            {platform === 'windows' && edition === 'cli' && (
+              <ol className="space-y-3 text-sm text-cyan-100/70 leading-relaxed list-decimal list-inside marker:text-cyan-500 marker:font-bold">
+                <li>ページ下のボタンからZIPをダウンロードし「すべて展開」します。</li>
+                <li>フォルダ内の <code className="text-cyan-300 bg-cyan-950/50 px-1.5 py-0.5 rounded border border-cyan-900/50">scripts/build_windows.bat</code> をダブルクリックします。</li>
+                <li>自動で準備が完了し、コマンドラインから利用可能になります。</li>
+              </ol>
+            )}
+            {platform === 'linux' && (
+              <ol className="space-y-3 text-sm text-cyan-100/70 leading-relaxed list-decimal list-inside marker:text-cyan-500 marker:font-bold">
+                <li>ZIPをダウンロードし、展開します。</li>
+                <li>ターミナルで展開したフォルダを開きます。</li>
+                <li><code className="text-cyan-300 bg-cyan-950/50 px-1.5 py-0.5 rounded border border-cyan-900/50">bash scripts/build_linux.sh</code> を実行すると全自動で完了します。</li>
+              </ol>
+            )}
+            {platform === 'android' && (
+              <ol className="space-y-3 text-sm text-cyan-100/70 leading-relaxed list-decimal list-inside marker:text-cyan-500 marker:font-bold">
+                <li>F-Droidから「Termux」アプリをインストールします。</li>
+                <li>ZIPをスマホにダウンロードして展開します。</li>
+                <li>Termux内でCMakeを使ってビルドします。</li>
+              </ol>
+            )}
           </div>
-        </div>
-      </footer>
+
+          {/* Download Action Button */}
+          <button
+            onClick={handleDownload}
+            disabled={isZipping}
+            className="w-full flex items-center justify-center gap-3 py-5 bg-cyan-500 hover:bg-cyan-400 active:bg-cyan-600 text-black rounded-xl font-black text-lg transition-all shadow-[0_0_20px_rgba(34,211,238,0.3)] hover:shadow-[0_0_30px_rgba(34,211,238,0.5)] disabled:opacity-50 disabled:cursor-not-allowed"
+          >
+            <Download className="w-6 h-6" />
+            {isZipping ? '準備中...' : 'ファイルをダウンロードする'}
+          </button>
+
+        </section>
+      </main>
     </div>
   );
 }
