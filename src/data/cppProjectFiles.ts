@@ -771,5 +771,148 @@ YouTube および Bilibili の動画URLから「動画タイトル」と「投�
 - Windows / Debian Linux / Android (Termux) クロスプラットフォーム
 - CMakeによる統一ビルド (nlohmann/json 自動取得)
 - GitHub Actions によるクラウド自動コンパイル対応`
+  },
+  {
+    path: 'windows_gui.cs',
+    filename: 'windows_gui.cs',
+    category: 'cpp',
+    description: 'Windows専用: C# WinFormsによる単一EXEのGUIダウンローダー',
+    content: `using System;
+using System.Diagnostics;
+using System.Drawing;
+using System.IO;
+using System.Windows.Forms;
+
+namespace YtDlpWrapper
+{
+    public class MainForm : Form
+    {
+        private TextBox txtUrl;
+        private Button btnDownload;
+        private TextBox txtLog;
+        private Label lblStatus;
+
+        public MainForm()
+        {
+            this.Text = "Cyberpunk Video Downloader (GUI)";
+            this.Size = new Size(800, 600);
+            this.BackColor = Color.FromArgb(9, 9, 11);
+            this.ForeColor = Color.FromArgb(34, 211, 238);
+            this.Font = new Font("Consolas", 10F, FontStyle.Regular, GraphicsUnit.Point, ((byte)(0)));
+            this.StartPosition = FormStartPosition.CenterScreen;
+
+            Label lblTitle = new Label() { Text = "VIDEO URL:", Location = new Point(20, 25), AutoSize = true, ForeColor = Color.FromArgb(217, 70, 239) };
+            this.Controls.Add(lblTitle);
+
+            txtUrl = new TextBox() { Location = new Point(120, 20), Width = 500, BackColor = Color.FromArgb(20, 20, 25), ForeColor = Color.White, BorderStyle = BorderStyle.FixedSingle };
+            this.Controls.Add(txtUrl);
+
+            btnDownload = new Button() { Text = "DOWNLOAD", Location = new Point(630, 18), Width = 130, Height = 30, BackColor = Color.FromArgb(250, 204, 21), ForeColor = Color.Black, FlatStyle = FlatStyle.Flat };
+            btnDownload.FlatAppearance.BorderSize = 0;
+            btnDownload.Cursor = Cursors.Hand;
+            btnDownload.Click += BtnDownload_Click;
+            this.Controls.Add(btnDownload);
+
+            txtLog = new TextBox() { Location = new Point(20, 70), Width = 740, Height = 430, Multiline = true, ScrollBars = ScrollBars.Vertical, ReadOnly = true, BackColor = Color.FromArgb(15, 15, 20), ForeColor = Color.FromArgb(168, 85, 247), BorderStyle = BorderStyle.FixedSingle };
+            this.Controls.Add(txtLog);
+
+            lblStatus = new Label() { Text = "準備完了。同じフォルダに yt-dlp.exe と ffmpeg.exe を置いてください。", Location = new Point(20, 520), AutoSize = true, ForeColor = Color.Gray };
+            this.Controls.Add(lblStatus);
+        }
+
+        private void BtnDownload_Click(object sender, EventArgs e)
+        {
+            string url = txtUrl.Text.Trim();
+            if (string.IsNullOrEmpty(url)) { MessageBox.Show("URLを入力してください。"); return; }
+
+            string basePath = AppDomain.CurrentDomain.BaseDirectory;
+            string ytdlpPath = Path.Combine(basePath, "yt-dlp.exe");
+            string ffmpegPath = Path.Combine(basePath, "ffmpeg.exe");
+
+            if (!File.Exists(ytdlpPath))
+            {
+                Log("エラー: yt-dlp.exe が同じフォルダに見つかりません。");
+                return;
+            }
+            if (!File.Exists(ffmpegPath))
+            {
+                Log("警告: ffmpeg.exe が見つかりません。最高画質での結合に失敗する可能性があります。");
+            }
+
+            Log("=========================================");
+            Log("ダウンロード開始: " + url);
+            btnDownload.Enabled = false;
+
+            ProcessStartInfo psi = new ProcessStartInfo();
+            psi.FileName = ytdlpPath;
+            psi.Arguments = $"-f \\"bv*+ba/b\\" --merge-output-format mp4 --ffmpeg-location \\"{basePath.TrimEnd('\\\\')}\\" -o \\"%(title)s - %(uploader)s.%(ext)s\\" \\"{url}\\"";
+            psi.UseShellExecute = false;
+            psi.CreateNoWindow = true;
+            psi.RedirectStandardOutput = true;
+            psi.RedirectStandardError = true;
+            psi.StandardOutputEncoding = System.Text.Encoding.UTF8;
+            psi.StandardErrorEncoding = System.Text.Encoding.UTF8;
+
+            Process proc = new Process();
+            proc.StartInfo = psi;
+            proc.OutputDataReceived += (s, ev) => { if (ev.Data != null) Invoke(new Action(() => Log(ev.Data))); };
+            proc.ErrorDataReceived += (s, ev) => { if (ev.Data != null) Invoke(new Action(() => Log(ev.Data))); };
+            proc.EnableRaisingEvents = true;
+            proc.Exited += (s, ev) => { Invoke(new Action(() => { Log("完了しました。"); btnDownload.Enabled = true; })); };
+
+            proc.Start();
+            proc.BeginOutputReadLine();
+            proc.BeginErrorReadLine();
+        }
+
+        private void Log(string msg)
+        {
+            txtLog.AppendText(msg + Environment.NewLine);
+            txtLog.SelectionStart = txtLog.Text.Length;
+            txtLog.ScrollToCaret();
+        }
+
+        [STAThread]
+        static void Main()
+        {
+            Application.EnableVisualStyles();
+            Application.Run(new MainForm());
+        }
+    }
+}
+`
+  },
+  {
+    path: 'start_windows_gui.bat',
+    filename: 'start_windows_gui.bat',
+    category: 'script',
+    description: 'Windows専用: GUIプログラムの自動コンパイル＆起動バッチ',
+    content: `@echo off
+chcp 65001 >nul
+echo ------------------------------------------
+echo CYBERPUNK DOWNLOADER GUI BUILDER
+echo ------------------------------------------
+
+set CSC_PATH=%WINDIR%\\Microsoft.NET\\Framework\\v4.0.30319\\csc.exe
+if not exist "%CSC_PATH%" (
+    echo [ERROR] C# コンパイラが見つかりません。
+    pause
+    exit /b
+)
+
+if not exist "CyberDownloaderGUI.exe" (
+    echo GUIプログラムをコンパイル中...
+    "%CSC_PATH%" /nologo /target:winexe /out:CyberDownloaderGUI.exe windows_gui.cs
+    if errorlevel 1 (
+        echo コンパイルに失敗しました。
+        pause
+        exit /b
+    )
+    echo コンパイル成功！
+)
+
+echo GUIを起動しています...
+start CyberDownloaderGUI.exe
+`
   }
 ];

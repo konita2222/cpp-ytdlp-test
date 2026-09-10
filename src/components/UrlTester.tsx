@@ -162,7 +162,7 @@ export function UrlTester() {
                   [{p.platform}] {p.label}
                 </span>
               </div>
-              <div className="text-[11px] text-cyan-600 font-mono truncate mt-1">{p.url}</div>
+              <div className="text-[11px] text-cyan-600 font-mono mt-1 break-all line-clamp-2">{p.url}</div>
             </button>
           ))}
         </div>

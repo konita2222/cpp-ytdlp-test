@@ -52,7 +52,7 @@ const GUIDES: GuideTab[] = [
   {
     id: 'windows',
     title: 'Windows 11 / 10',
-    badge: 'WINGET // AUTO INSTALL',
+    badge: 'GUI パネル対応 // WINGET',
     icon: Laptop,
     steps: [
       {
@@ -65,7 +65,7 @@ const GUIDES: GuideTab[] = [
       {
         stepNumber: 2,
         title: '設計図の作成 (CMake)',
-        description: 'PowerShell または コマンドプロンプトで、このソースコードが入っているフォルダに移動(cd)して、以下を実行します。',
+        description: 'PowerShell または コマンドプロンプトで、ZIPを解凍したフォルダに移動(cd)して、以下を実行します。',
         command: 'cmake -B build -DCMAKE_BUILD_TYPE=Release',
       },
       {
@@ -76,10 +76,10 @@ const GUIDES: GuideTab[] = [
       },
       {
         stepNumber: 4,
-        title: '使ってみよう！',
-        description: 'URLを渡して実行します。',
-        command: '.\\build\\Release\\media_fetcher.exe "https://www.bilibili.com/video/BV1xx411c7mD"',
-        note: '※ ダウンロードしたプロジェクトの中にある scripts\\build_windows.bat をダブルクリックするだけでも自動で組み立ててくれます！',
+        title: 'GUIで快適にダウンロード！',
+        description: '【新機能】黒い画面（コマンド）を使わずに、専用のウィンドウ（GUI）でダウンロードできるようになりました！\n※同じフォルダにyt-dlp.exeとffmpeg.exeを配置してください。',
+        command: 'start_windows_gui.bat',
+        note: '※ ZIPの中に入っている「start_windows_gui.bat」をダブルクリックするだけで、自動的にC#がコンパイルされ専用のダウンロード画面が開きます！',
       },
     ],
   },
@@ -154,7 +154,7 @@ export function PlatformGuide() {
   };
 
   return (
-    <div className="bg-black/60 border border-cyan-900/50 rounded-lg p-6 shadow-[0_0_15px_rgba(6,182,212,0.1)] backdrop-blur-sm space-y-6">
+    <div id="windows-guide" className="bg-black/60 border border-cyan-900/50 rounded-lg p-6 shadow-[0_0_15px_rgba(6,182,212,0.1)] backdrop-blur-sm space-y-6">
       <div className="flex flex-wrap items-center justify-between gap-3 pb-4 border-b border-cyan-900/50">
         <div>
           <h3 className="text-lg font-bold text-cyan-400 flex items-center gap-2 uppercase tracking-wide">

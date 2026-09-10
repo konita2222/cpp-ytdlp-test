@@ -68,29 +68,40 @@ export default function App() {
             </div>
             <div>
               <div className="flex items-center gap-2">
-                <h1 className="text-sm sm:text-base font-bold text-transparent bg-clip-text bg-gradient-to-r from-cyan-400 to-fuchsia-500 tracking-wider uppercase">
+                <h1 className="text-sm sm:text-base font-bold text-transparent bg-clip-text bg-gradient-to-r from-cyan-400 to-fuchsia-500 tracking-wider uppercase break-words">
                   C++ Media Downloader Studio
                 </h1>
                 <span className="hidden sm:inline-block text-[11px] font-mono px-2 py-0.5 rounded bg-fuchsia-500/10 border border-fuchsia-500/50 text-fuchsia-400 uppercase tracking-widest shadow-[0_0_8px_rgba(217,70,239,0.3)]">
                   yt-dlp & FFmpeg
                 </span>
               </div>
-              <p className="text-[11px] text-cyan-200/70 font-mono tracking-wide">
+              <p className="text-[11px] text-cyan-200/70 font-mono tracking-wide break-words whitespace-pre-wrap">
                 YouTube & Bilibili // AUTO NAMING // Windows / Debian / Termux
               </p>
             </div>
           </div>
 
-          <div className="flex items-center gap-2">
+          <div className="flex items-center gap-2 flex-wrap justify-end">
+            <button
+              onClick={() => {
+                setActiveTab('guide');
+                document.getElementById('windows-guide')?.scrollIntoView({ behavior: 'smooth' });
+              }}
+              className="flex items-center gap-2 px-3 py-1.5 sm:px-4 sm:py-2 bg-fuchsia-600 hover:bg-fuchsia-500 active:bg-fuchsia-700 text-white rounded text-xs font-bold uppercase tracking-wider shadow-[0_0_15px_rgba(217,70,239,0.4)] transition-all cursor-pointer whitespace-nowrap"
+            >
+              <Laptop className="w-4 h-4" />
+              <span className="hidden sm:inline">WINDOWS版 (GUI) を使う</span>
+              <span className="sm:hidden">WIN GUI</span>
+            </button>
             <button
               id="header-zip-download-button"
               onClick={handleDownloadAllZip}
               disabled={isZipping}
-              className="flex items-center gap-2 px-4 py-2 bg-yellow-400 hover:bg-yellow-300 active:bg-yellow-500 text-black rounded text-xs font-bold uppercase tracking-wider shadow-[0_0_15px_rgba(250,204,21,0.4)] transition-all cursor-pointer disabled:opacity-50"
+              className="flex items-center gap-2 px-3 py-1.5 sm:px-4 sm:py-2 bg-yellow-400 hover:bg-yellow-300 active:bg-yellow-500 text-black rounded text-xs font-bold uppercase tracking-wider shadow-[0_0_15px_rgba(250,204,21,0.4)] transition-all cursor-pointer disabled:opacity-50 whitespace-nowrap"
             >
               <FolderArchive className="w-4 h-4" />
               <span className="hidden sm:inline">
-                {isZipping ? 'GENERATING...' : 'DOWNLOAD PROJECT ZIP'}
+                {isZipping ? 'GENERATING...' : 'ソースコードを一括DL'}
               </span>
               <span className="sm:hidden">ZIP</span>
             </button>
@@ -100,11 +111,23 @@ export default function App() {
 
       {/* Main Container */}
       <main className="flex-1 max-w-7xl w-full mx-auto px-4 sm:px-6 lg:px-8 py-8 space-y-8 relative z-10">
+        
+        {/* Beginner Alert */}
+        <div className="bg-cyan-950/40 border border-cyan-500/50 rounded-lg p-5 flex items-start gap-4 backdrop-blur-md shadow-[0_0_15px_rgba(34,211,238,0.2)]">
+          <Sparkles className="w-5 h-5 text-cyan-400 flex-shrink-0 mt-0.5" />
+          <div className="space-y-1.5">
+            <h2 className="text-sm font-bold text-cyan-300 break-words">初心者の方へ：GitHub Pagesで自動公開に対応しました！</h2>
+            <p className="text-xs text-cyan-100/80 leading-relaxed font-mono break-words whitespace-pre-wrap">
+              このプロジェクトをGitHubにアップロード（Push）するだけで、裏側で自動的にビルドが走り、GitHub PagesとしてWebサイトが公開されます。複雑な設定やJSでの書き換えは一切不要です！
+            </p>
+          </div>
+        </div>
+
         {/* Navigation Tabs */}
-        <div className="flex items-center gap-2 p-1 bg-black/40 border border-cyan-900/50 rounded overflow-x-auto text-xs font-mono uppercase tracking-wider backdrop-blur-sm">
+        <div className="flex items-center gap-2 p-1.5 bg-black/40 border border-cyan-900/50 rounded overflow-x-auto text-xs font-mono uppercase tracking-wider backdrop-blur-sm scrollbar-hide">
           <button
             onClick={() => setActiveTab('tester')}
-            className={`flex items-center gap-2 px-4 py-2.5 rounded transition-all whitespace-nowrap cursor-pointer ${
+            className={`flex items-center gap-2 px-4 py-2.5 rounded transition-all whitespace-nowrap cursor-pointer flex-shrink-0 ${
               activeTab === 'tester'
                 ? 'bg-cyan-500/20 text-cyan-300 border border-cyan-400 shadow-[0_0_10px_rgba(34,211,238,0.3)]'
                 : 'text-cyan-500/70 border border-transparent hover:text-cyan-300 hover:bg-cyan-950/40'

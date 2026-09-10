@@ -146,8 +146,8 @@ export function CodeViewer() {
                   {file.category === 'docs' && <span className="text-cyan-600 font-bold font-mono">#</span>}
                 </div>
                 <div className="flex-1 min-w-0">
-                  <div className="font-mono font-bold truncate">{file.path}</div>
-                  <div className={`text-[10px] truncate mt-1 ${isSelected ? 'text-cyan-300' : 'text-cyan-700'} tracking-wide`}>
+                  <div className="font-mono font-bold break-all">{file.path}</div>
+                  <div className={`text-[10px] mt-1 ${isSelected ? 'text-cyan-300' : 'text-cyan-700'} tracking-wide line-clamp-2 leading-relaxed`}>
                     {file.description}
                   </div>
                 </div>
