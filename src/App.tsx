@@ -12,9 +12,6 @@ import {
   ArchitectureFlow
 } from './components/ArchitectureFlow';
 import {
-  AiSearchAssistant
-} from './components/AiSearchAssistant';
-import {
   FolderArchive,
   Terminal,
   FileCode,
@@ -31,7 +28,7 @@ import JSZip from 'jszip';
 import { CPP_PROJECT_FILES } from './data/cppProjectFiles';
 
 export default function App() {
-  const [activeTab, setActiveTab] = useState<'code' | 'tester' | 'guide' | 'arch' | 'ai'>('tester');
+  const [activeTab, setActiveTab] = useState<'code' | 'tester' | 'guide' | 'arch'>('tester');
   const [isZipping, setIsZipping] = useState(false);
 
   const handleDownloadAllZip = async () => {
@@ -58,25 +55,28 @@ export default function App() {
   };
 
   return (
-    <div className="min-h-screen bg-slate-950 text-slate-100 flex flex-col antialiased selection:bg-indigo-500/30 selection:text-indigo-200">
+    <div className="min-h-screen bg-[#09090b] text-cyan-50 font-sans flex flex-col antialiased selection:bg-fuchsia-500/40 selection:text-fuchsia-100 relative overflow-hidden">
+      {/* Background Cyberpunk Grid/Glow */}
+      <div className="fixed inset-0 pointer-events-none bg-[radial-gradient(ellipse_at_top_right,_var(--tw-gradient-stops))] from-cyan-900/20 via-[#09090b] to-[#09090b] z-0"></div>
+      
       {/* Top Navbar */}
-      <header className="bg-slate-900/80 backdrop-blur border-b border-slate-800/80 sticky top-0 z-30">
+      <header className="bg-black/60 backdrop-blur-md border-b border-cyan-500/30 sticky top-0 z-30 shadow-[0_0_15px_rgba(6,182,212,0.2)]">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-16 flex items-center justify-between gap-4">
           <div className="flex items-center gap-3">
-            <div className="w-10 h-10 rounded-xl bg-gradient-to-br from-indigo-500 to-blue-600 flex items-center justify-center text-white shadow-lg shadow-indigo-500/20 font-mono font-bold text-sm">
+            <div className="w-10 h-10 rounded bg-black border border-cyan-400 flex items-center justify-center text-cyan-400 shadow-[0_0_10px_rgba(34,211,238,0.5)] font-mono font-bold text-sm">
               C++
             </div>
             <div>
               <div className="flex items-center gap-2">
-                <h1 className="text-sm sm:text-base font-bold text-slate-100 tracking-tight">
+                <h1 className="text-sm sm:text-base font-bold text-transparent bg-clip-text bg-gradient-to-r from-cyan-400 to-fuchsia-500 tracking-wider uppercase">
                   C++ Media Downloader Studio
                 </h1>
-                <span className="hidden sm:inline-block text-[11px] font-mono px-2 py-0.5 rounded-full bg-indigo-500/10 border border-indigo-500/20 text-indigo-400">
+                <span className="hidden sm:inline-block text-[11px] font-mono px-2 py-0.5 rounded bg-fuchsia-500/10 border border-fuchsia-500/50 text-fuchsia-400 uppercase tracking-widest shadow-[0_0_8px_rgba(217,70,239,0.3)]">
                   yt-dlp & FFmpeg
                 </span>
               </div>
-              <p className="text-[11px] text-slate-400">
-                YouTube & Bilibili 対応 | 「タイトル - 投稿者名」自動命名 | Windows / Debian / Android (Termux)
+              <p className="text-[11px] text-cyan-200/70 font-mono tracking-wide">
+                YouTube & Bilibili // AUTO NAMING // Windows / Debian / Termux
               </p>
             </div>
           </div>
@@ -86,11 +86,11 @@ export default function App() {
               id="header-zip-download-button"
               onClick={handleDownloadAllZip}
               disabled={isZipping}
-              className="flex items-center gap-2 px-3.5 py-2 bg-indigo-600 hover:bg-indigo-500 active:bg-indigo-700 text-white rounded-lg text-xs font-semibold shadow-md shadow-indigo-600/20 transition-all cursor-pointer disabled:opacity-50"
+              className="flex items-center gap-2 px-4 py-2 bg-yellow-400 hover:bg-yellow-300 active:bg-yellow-500 text-black rounded text-xs font-bold uppercase tracking-wider shadow-[0_0_15px_rgba(250,204,21,0.4)] transition-all cursor-pointer disabled:opacity-50"
             >
               <FolderArchive className="w-4 h-4" />
               <span className="hidden sm:inline">
-                {isZipping ? '生成中...' : 'C++プロジェクトZIP保存'}
+                {isZipping ? 'GENERATING...' : 'DOWNLOAD PROJECT ZIP'}
               </span>
               <span className="sm:hidden">ZIP</span>
             </button>
@@ -99,67 +99,55 @@ export default function App() {
       </header>
 
       {/* Main Container */}
-      <main className="flex-1 max-w-7xl w-full mx-auto px-4 sm:px-6 lg:px-8 py-6 space-y-6">
+      <main className="flex-1 max-w-7xl w-full mx-auto px-4 sm:px-6 lg:px-8 py-8 space-y-8 relative z-10">
         {/* Navigation Tabs */}
-        <div className="flex items-center gap-1.5 p-1 bg-slate-900 border border-slate-800 rounded-xl overflow-x-auto text-xs">
+        <div className="flex items-center gap-2 p-1 bg-black/40 border border-cyan-900/50 rounded overflow-x-auto text-xs font-mono uppercase tracking-wider backdrop-blur-sm">
           <button
             onClick={() => setActiveTab('tester')}
-            className={`flex items-center gap-2 px-3.5 py-2 rounded-lg font-medium transition-colors whitespace-nowrap cursor-pointer ${
+            className={`flex items-center gap-2 px-4 py-2.5 rounded transition-all whitespace-nowrap cursor-pointer ${
               activeTab === 'tester'
-                ? 'bg-indigo-600 text-white shadow'
-                : 'text-slate-400 hover:text-slate-200 hover:bg-slate-800/60'
+                ? 'bg-cyan-500/20 text-cyan-300 border border-cyan-400 shadow-[0_0_10px_rgba(34,211,238,0.3)]'
+                : 'text-cyan-500/70 border border-transparent hover:text-cyan-300 hover:bg-cyan-950/40'
             }`}
           >
             <Video className="w-4 h-4" />
-            <span>URL解析 & 命名テスト</span>
+            <span>URL Tester</span>
           </button>
 
           <button
             onClick={() => setActiveTab('code')}
-            className={`flex items-center gap-2 px-3.5 py-2 rounded-lg font-medium transition-colors whitespace-nowrap cursor-pointer ${
+            className={`flex items-center gap-2 px-4 py-2.5 rounded transition-all whitespace-nowrap cursor-pointer ${
               activeTab === 'code'
-                ? 'bg-indigo-600 text-white shadow'
-                : 'text-slate-400 hover:text-slate-200 hover:bg-slate-800/60'
+                ? 'bg-cyan-500/20 text-cyan-300 border border-cyan-400 shadow-[0_0_10px_rgba(34,211,238,0.3)]'
+                : 'text-cyan-500/70 border border-transparent hover:text-cyan-300 hover:bg-cyan-950/40'
             }`}
           >
             <FileCode className="w-4 h-4" />
-            <span>C++ & CMake ソースコード</span>
+            <span>Source Code</span>
           </button>
 
           <button
             onClick={() => setActiveTab('guide')}
-            className={`flex items-center gap-2 px-3.5 py-2 rounded-lg font-medium transition-colors whitespace-nowrap cursor-pointer ${
+            className={`flex items-center gap-2 px-4 py-2.5 rounded transition-all whitespace-nowrap cursor-pointer ${
               activeTab === 'guide'
-                ? 'bg-indigo-600 text-white shadow'
-                : 'text-slate-400 hover:text-slate-200 hover:bg-slate-800/60'
+                ? 'bg-cyan-500/20 text-cyan-300 border border-cyan-400 shadow-[0_0_10px_rgba(34,211,238,0.3)]'
+                : 'text-cyan-500/70 border border-transparent hover:text-cyan-300 hover:bg-cyan-950/40'
             }`}
           >
             <Laptop className="w-4 h-4" />
-            <span>OS別ビルド手順 (Debian/Win/Android)</span>
+            <span>Install Guide</span>
           </button>
 
           <button
             onClick={() => setActiveTab('arch')}
-            className={`flex items-center gap-2 px-3.5 py-2 rounded-lg font-medium transition-colors whitespace-nowrap cursor-pointer ${
+            className={`flex items-center gap-2 px-4 py-2.5 rounded transition-all whitespace-nowrap cursor-pointer ${
               activeTab === 'arch'
-                ? 'bg-indigo-600 text-white shadow'
-                : 'text-slate-400 hover:text-slate-200 hover:bg-slate-800/60'
+                ? 'bg-cyan-500/20 text-cyan-300 border border-cyan-400 shadow-[0_0_10px_rgba(34,211,238,0.3)]'
+                : 'text-cyan-500/70 border border-transparent hover:text-cyan-300 hover:bg-cyan-950/40'
             }`}
           >
             <Layers className="w-4 h-4" />
-            <span>設計 & アーキテクチャ解説</span>
-          </button>
-
-          <button
-            onClick={() => setActiveTab('ai')}
-            className={`flex items-center gap-2 px-3.5 py-2 rounded-lg font-medium transition-colors whitespace-nowrap cursor-pointer ${
-              activeTab === 'ai'
-                ? 'bg-indigo-600 text-white shadow'
-                : 'text-slate-400 hover:text-slate-200 hover:bg-slate-800/60'
-            }`}
-          >
-            <Sparkles className="w-4 h-4" />
-            <span>AI 検索アシスタント</span>
+            <span>Architecture</span>
           </button>
         </div>
 
@@ -187,53 +175,49 @@ export default function App() {
           <div className="space-y-6">
             <ArchitectureFlow />
             <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-              <div className="bg-slate-900 border border-slate-800 rounded-xl p-5 space-y-3">
-                <h4 className="text-sm font-semibold text-slate-200 flex items-center gap-2">
-                  <CheckCircle2 className="w-4 h-4 text-emerald-400" />
+              <div className="bg-black/60 border border-cyan-900/50 rounded p-5 space-y-3 shadow-[0_0_15px_rgba(6,182,212,0.1)] backdrop-blur-sm relative overflow-hidden group">
+                <div className="absolute top-0 left-0 w-1 h-full bg-fuchsia-500 group-hover:shadow-[0_0_10px_rgba(217,70,239,0.8)] transition-all"></div>
+                <h4 className="text-sm font-bold text-fuchsia-400 flex items-center gap-2 uppercase tracking-wide">
+                  <CheckCircle2 className="w-4 h-4" />
                   <span>なぜスペースとハイフン ( - ) による自動命名なのか？</span>
                 </h4>
-                <p className="text-xs text-slate-400 leading-relaxed">
+                <p className="text-sm text-cyan-200/70 leading-relaxed font-mono">
                   YouTubeやBilibiliから動画を取得する際、通常は動画IDや英数字のみがファイル名になりがちです。
-                  本プログラムは <code className="text-indigo-300 font-mono">yt-dlp --dump-single-json</code> から
-                  タイトル（<code className="text-indigo-300 font-mono">title</code>）と投稿者名（<code className="text-indigo-300 font-mono">uploader</code>）を抽出し、
-                  <code className="text-emerald-300 font-mono">タイトル - 投稿者名.mp4</code> として結合します。
-                  さらに、ファイル名として使えない禁止文字（<code className="text-amber-300 font-mono">/ \ : * ? " &lt; &gt; |</code>）を自動サニタイズするため、OSエラーが一切発生しません。
+                  本プログラムは <code className="text-fuchsia-300 bg-fuchsia-900/30 px-1 py-0.5 rounded">yt-dlp --dump-single-json</code> から
+                  タイトルと投稿者名を抽出し、
+                  <code className="text-cyan-300 bg-cyan-900/30 px-1 py-0.5 rounded ml-1">タイトル - 投稿者名.mp4</code> として結合します。
+                  さらに、ファイル名として使えない禁止文字を自動サニタイズするため、OSエラーが一切発生しません。
                 </p>
               </div>
 
-              <div className="bg-slate-900 border border-slate-800 rounded-xl p-5 space-y-3">
-                <h4 className="text-sm font-semibold text-slate-200 flex items-center gap-2">
-                  <CheckCircle2 className="w-4 h-4 text-emerald-400" />
-                  <span>初心者でも絶対にコンパイルできる仕組み (CMake FetchContent)</span>
+              <div className="bg-black/60 border border-cyan-900/50 rounded p-5 space-y-3 shadow-[0_0_15px_rgba(6,182,212,0.1)] backdrop-blur-sm relative overflow-hidden group">
+                <div className="absolute top-0 left-0 w-1 h-full bg-cyan-500 group-hover:shadow-[0_0_10px_rgba(34,211,238,0.8)] transition-all"></div>
+                <h4 className="text-sm font-bold text-cyan-400 flex items-center gap-2 uppercase tracking-wide">
+                  <CheckCircle2 className="w-4 h-4" />
+                  <span>初心者でも絶対にコンパイルできる仕組み</span>
                 </h4>
-                <p className="text-xs text-slate-400 leading-relaxed">
+                <p className="text-sm text-cyan-200/70 leading-relaxed font-mono">
                   C++初心者が最も挫折しやすい原因は「外部ライブラリの手動ダウンロードとパス設定」です。
-                  本設計ではCMake標準の <code className="text-indigo-300 font-mono">FetchContent</code> を採用しているため、
-                  初回ビルド時に JSONパーサー（<code className="text-indigo-300 font-mono">nlohmann/json</code>）がGitHubから全自動で取得・構成されます。
-                  ユーザーは <code className="text-slate-200 font-mono">cmake -B build && cmake --build build</code> を実行するだけで完成します。
+                  本設計ではCMake標準の <code className="text-cyan-300 bg-cyan-900/30 px-1 py-0.5 rounded">FetchContent</code> を採用しているため、
+                  初回ビルド時に JSONパーサーがGitHubから全自動で取得・構成されます。
+                  ユーザーは <code className="text-yellow-300 bg-yellow-900/30 px-1 py-0.5 rounded mt-1 inline-block">cmake -B build && cmake --build build</code> を実行するだけで完成します。
                 </p>
               </div>
             </div>
           </div>
         )}
-
-        {activeTab === 'ai' && (
-          <div className="space-y-6">
-            <AiSearchAssistant />
-          </div>
-        )}
       </main>
 
       {/* Footer */}
-      <footer className="bg-slate-950 border-t border-slate-800/80 py-6 text-center text-xs text-slate-500">
+      <footer className="bg-black/80 border-t border-cyan-900/50 py-6 text-center text-xs text-cyan-500/60 font-mono tracking-widest relative z-10">
         <div className="max-w-7xl mx-auto px-4 flex flex-col sm:flex-row items-center justify-between gap-3">
           <div className="flex items-center gap-2">
-            <span>C++ Cross-Platform Media Downloader</span>
-            <span>•</span>
-            <span className="font-mono text-emerald-400">100% Free & Open Source</span>
+            <span className="uppercase">C++ Cross-Platform Media Downloader</span>
+            <span className="text-cyan-800">///</span>
+            <span className="text-fuchsia-400 font-bold shadow-[0_0_5px_rgba(217,70,239,0.3)]">100% FREE & OPEN SOURCE</span>
           </div>
           <div>
-            <span>YouTube & Bilibili 対応 | Windows / Debian Linux / Android (Termux)</span>
+            <span className="uppercase text-[10px]">YouTube & Bilibili // Windows / Debian Linux / Android (Termux)</span>
           </div>
         </div>
       </footer>

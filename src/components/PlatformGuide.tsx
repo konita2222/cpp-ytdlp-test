@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import { Terminal, Copy, Check, ExternalLink, Cpu, Laptop, Smartphone, Github, ShieldAlert } from 'lucide-react';
+import { Terminal, Copy, Check, Cpu, Laptop, Smartphone, Github } from 'lucide-react';
 
 interface GuideTab {
   id: 'debian' | 'windows' | 'android' | 'github';
@@ -19,123 +19,123 @@ const GUIDES: GuideTab[] = [
   {
     id: 'debian',
     title: 'Linux (Debian / Ubuntu)',
-    badge: '100% 無料 & 1行インストール',
+    badge: '100% FREE // ONE-LINE INSTALL',
     icon: Terminal,
     steps: [
       {
         stepNumber: 1,
-        title: '依存ツールのインストール (apt & pip)',
-        description: 'Debian/Ubuntuの標準パッケージマネージャでビルドツールとffmpegをインストールします。',
+        title: 'システムの準備 (APT & PIP)',
+        description: 'まずは必要な道具（C++コンパイラや動画処理ツール）をまとめてインストールします。黒い画面（ターミナル）を開いて、以下のコマンドを貼り付けてEnterを押してください。',
         command: 'sudo apt update && sudo apt install -y cmake build-essential ffmpeg python3-pip git\npip3 install --upgrade yt-dlp',
       },
       {
         stepNumber: 2,
-        title: 'CMakeによるビルド構成の作成',
-        description: 'CMakeLists.txtを読み込み、nlohmann/jsonなどの外部ライブラリを自動ダウンロード・構成します。',
+        title: '設計図の作成 (CMake)',
+        description: '次に、プログラムを組み立てるための設計図（buildフォルダ）を作ります。',
         command: 'cmake -B build -DCMAKE_BUILD_TYPE=Release',
       },
       {
         stepNumber: 3,
-        title: 'コンパイル実行',
-        description: 'マルチコアCPUをフル活用して並列コンパイルします。完了すると build/media_fetcher が生成されます。',
+        title: 'コンパイル (組み立て)',
+        description: '設計図をもとに、実際にプログラムを組み立てます。完了すると build フォルダの中に media_fetcher という実行ファイルが完成します。',
         command: 'cmake --build build --config Release -j$(nproc)',
       },
       {
         stepNumber: 4,
-        title: '実行テスト (YouTube または Bilibili)',
-        description: 'ダウンロードしたい動画のURLを渡して実行します。',
+        title: '使ってみよう！',
+        description: '完成したプログラムに、ダウンロードしたい動画のURLを渡して実行するだけです。',
         command: './build/media_fetcher "https://www.youtube.com/watch?v=dQw4w9WgXcQ"',
-        note: '※ scripts/build_linux.sh を実行すればステップ1〜3を全自動で行えます。',
+        note: '※ ダウンロードしたプロジェクトの中にある scripts/build_linux.sh を実行すると、ステップ1〜3を全自動でやってくれます！',
       },
     ],
   },
   {
     id: 'windows',
     title: 'Windows 11 / 10',
-    badge: 'winget でツール全自動導入',
+    badge: 'WINGET // AUTO INSTALL',
     icon: Laptop,
     steps: [
       {
         stepNumber: 1,
-        title: 'winget (Windows標準パッケージマネージャ) で一括インストール',
-        description: 'PowerShellを「管理者として実行」し、以下のコマンドでCMake、yt-dlp、FFmpegを無料導入します。',
+        title: '必要なツールのインストール (winget)',
+        description: 'Windowsのスタートメニューから「PowerShell」と検索し、「管理者として実行」で開きます。その後、以下のコマンドを1行ずつ貼り付けて実行してください。',
         command: 'winget install Kitware.CMake\nwinget install yt-dlp.yt-dlp\nwinget install Gyan.FFmpeg\nwinget install Microsoft.VisualStudio.2022.BuildTools',
-        note: '※ すでに Visual Studio 2022 (Community等) がインストールされている場合はBuildToolsは不要です。',
+        note: '※ すでにVisual Studio (C++開発環境) を入れている場合は一番下の行は不要です。',
       },
       {
         stepNumber: 2,
-        title: 'CMake プロジェクトの生成',
-        description: 'PowerShell または コマンドプロンプトでソースコードのフォルダに移動して実行します。',
+        title: '設計図の作成 (CMake)',
+        description: 'PowerShell または コマンドプロンプトで、このソースコードが入っているフォルダに移動(cd)して、以下を実行します。',
         command: 'cmake -B build -DCMAKE_BUILD_TYPE=Release',
       },
       {
         stepNumber: 3,
-        title: 'コンパイル実行',
-        description: 'C++コードがビルドされ、build\\Release\\media_fetcher.exe が生成されます。',
+        title: 'コンパイル (組み立て)',
+        description: 'プログラムが組み立てられ、build\\Release\\media_fetcher.exe が完成します。',
         command: 'cmake --build build --config Release',
       },
       {
         stepNumber: 4,
-        title: '実行',
+        title: '使ってみよう！',
         description: 'URLを渡して実行します。',
         command: '.\\build\\Release\\media_fetcher.exe "https://www.bilibili.com/video/BV1xx411c7mD"',
-        note: '※ scripts\\build_windows.bat をダブルクリックするだけでも自動ビルド可能です。',
+        note: '※ ダウンロードしたプロジェクトの中にある scripts\\build_windows.bat をダブルクリックするだけでも自動で組み立ててくれます！',
       },
     ],
   },
   {
     id: 'android',
     title: 'Android (Termux)',
-    badge: 'スマホ単体で完全無料ビルド',
+    badge: 'MOBILE // NO ROOT REQUIRED',
     icon: Smartphone,
     steps: [
       {
         stepNumber: 1,
-        title: 'F-Droid から Termux アプリをインストール',
-        description: 'Google Play版は古いため、必ず F-Droid (https://f-droid.org/packages/com.termux/) からTermuxをインストールしてください。',
-        note: '完全無料でroot権限も不要です。',
+        title: 'Termux アプリを入れる',
+        description: 'Androidスマホだけでプログラムを作って動かせます。まず、F-Droidというサイトから「Termux」アプリをダウンロードしてインストールします。',
+        note: '※ Google Play版は古くて動かないので、必ずF-Droidから入れてください。完全無料で、危険な設定(root化)も不要です。',
       },
       {
         stepNumber: 2,
-        title: 'Termux内でコンパイラとツールのインストール',
-        description: 'Termuxアプリを開き、C++コンパイラ(Clang)、CMake、FFmpeg、yt-dlpをインストールします。',
+        title: 'Termux内でツールを入れる',
+        description: 'Termuxアプリを開いて、以下のコマンドを貼り付けてEnterを押します。必要な道具がスマホに入ります。',
         command: 'pkg update -y\npkg install -y clang cmake make git ffmpeg python\npip install --upgrade yt-dlp',
       },
       {
         stepNumber: 3,
-        title: '端末ストレージへのアクセス許可',
-        description: 'ダウンロードした動画をスマホの「ダウンロード」フォルダに保存できるように権限を付与します。',
+        title: 'スマホの保存フォルダを使えるようにする',
+        description: 'ダウンロードした動画をスマホの「ダウンロード」フォルダに保存できるように、アクセス権限をオンにします。',
         command: 'termux-setup-storage',
       },
       {
         stepNumber: 4,
-        title: 'ビルド & 実行',
-        description: 'CMakeでコンパイルし、スマホのストレージに出力します。',
+        title: '組み立て & 実行！',
+        description: 'スマホの中でコンパイルし、そのまま動画をダウンロードします。',
         command: 'cmake -B build -DCMAKE_BUILD_TYPE=Release\ncmake --build build --config Release -j$(nproc)\n./build/media_fetcher "https://www.youtube.com/watch?v=..." --outdir ~/storage/downloads',
       },
     ],
   },
   {
     id: 'github',
-    title: 'GitHub Actions (PCインストール不要)',
-    badge: 'クラウド完全自動ビルド',
+    title: 'GitHub Actions (PC不要)',
+    badge: 'CLOUD // 100% AUTOMATED',
     icon: Github,
     steps: [
       {
         stepNumber: 1,
-        title: 'GitHub にリポジトリを作成してソースをアップロード',
-        description: 'ダウンロードしたZIPを展開し、ご自身のGitHubアカウントにプッシュします。',
+        title: '自分のGitHubにアップロードする',
+        description: 'プログラミング環境を作るのが面倒な場合は、GitHubのクラウドサーバーに全部おまかせできます！プロジェクトをZIPでダウンロードし、自分のGitHubにアップロード(Push)してください。',
         command: 'git init\ngit add .\ngit commit -m "Initial commit"\ngit branch -M main\ngit remote add origin https://github.com/あなたのユーザー名/リポジトリ名.git\ngit push -u origin main',
       },
       {
         stepNumber: 2,
-        title: 'GitHub Actions が自動でビルド開始',
-        description: '.github/workflows/build.yml により、GitHubのクラウドサーバー上で自動的にWindows(.exe)、Linux、Android向けに並列コンパイルされます。',
+        title: 'GitHubが勝手に組み立ててくれる',
+        description: 'アップロードすると、.github/workflows/build.yml の設定が自動的に動き出し、クラウド上の強力なサーバーが Windows用、Linux用、Android用の3種類のプログラムを並行して組み立ててくれます。',
       },
       {
         stepNumber: 3,
-        title: '生成されたバイナリを1クリックダウンロード',
-        description: 'リポジトリの「Actions」タブを開き、ビルド完了後に「Artifacts」から完成済みの実行可能ファイルを直接ダウンロードできます。自分のPCにコンパイラを導入する必要すらありません！',
+        title: '完成品をダウンロード！',
+        description: 'あなたのリポジトリの「Actions」タブを開くと、組み立てが終わった完成品(Artifacts)が置いてあります。それをクリックしてダウンロードするだけ。自分のPCには一切何もインストールしなくてOKです！',
       },
     ],
   },
@@ -154,25 +154,25 @@ export function PlatformGuide() {
   };
 
   return (
-    <div className="bg-slate-900 border border-slate-800 rounded-xl p-6 shadow-xl space-y-6">
-      <div className="flex flex-wrap items-center justify-between gap-3 pb-4 border-b border-slate-800">
+    <div className="bg-black/60 border border-cyan-900/50 rounded-lg p-6 shadow-[0_0_15px_rgba(6,182,212,0.1)] backdrop-blur-sm space-y-6">
+      <div className="flex flex-wrap items-center justify-between gap-3 pb-4 border-b border-cyan-900/50">
         <div>
-          <h3 className="text-lg font-semibold text-slate-100 flex items-center gap-2">
-            <Cpu className="w-5 h-5 text-indigo-400" />
-            <span>クロスプラットフォーム ビルドガイド（完全無料・オープンソース）</span>
+          <h3 className="text-lg font-bold text-cyan-400 flex items-center gap-2 uppercase tracking-wide">
+            <Cpu className="w-5 h-5 text-fuchsia-500" />
+            <span>HOW TO BUILD (初心者向けインストール手順)</span>
           </h3>
-          <p className="text-xs text-slate-400 mt-1">
-            プログラミング初心者の方でも迷わずコンパイルできる、OS別コピペ実行ガイド
+          <p className="text-xs text-cyan-200/70 mt-1 font-mono">
+            プログラミングが初めてでも大丈夫！OSを選ぶだけで、コピペで終わる手順が分かります。
           </p>
         </div>
 
-        <span className="text-xs px-2.5 py-1 rounded-full bg-emerald-500/10 border border-emerald-500/20 text-emerald-400 font-mono">
-          CMake 統合構成
+        <span className="text-[10px] px-2.5 py-1 rounded bg-fuchsia-500/10 border border-fuchsia-500/30 text-fuchsia-400 font-mono uppercase tracking-widest shadow-[0_0_8px_rgba(217,70,239,0.2)]">
+          C++ / CMake
         </span>
       </div>
 
       {/* Tabs */}
-      <div className="grid grid-cols-2 sm:grid-cols-4 gap-2">
+      <div className="grid grid-cols-1 sm:grid-cols-4 gap-3">
         {GUIDES.map((g) => {
           const Icon = g.icon;
           const isSelected = activeTab === g.id;
@@ -180,17 +180,18 @@ export function PlatformGuide() {
             <button
               key={g.id}
               onClick={() => setActiveTab(g.id)}
-              className={`p-3 rounded-lg border text-left transition-all cursor-pointer flex flex-col justify-between gap-1.5 ${
+              className={`p-3 rounded border text-left transition-all cursor-pointer flex flex-col justify-between gap-2 relative overflow-hidden group ${
                 isSelected
-                  ? 'bg-indigo-950/60 border-indigo-500/50 text-indigo-200 shadow-md ring-1 ring-indigo-500/30'
-                  : 'bg-slate-950/60 border-slate-800 text-slate-400 hover:text-slate-200 hover:bg-slate-800/40'
+                  ? 'bg-cyan-950/40 border-cyan-400 text-cyan-300 shadow-[0_0_10px_rgba(34,211,238,0.3)]'
+                  : 'bg-black/40 border-cyan-900/50 text-cyan-500/70 hover:text-cyan-400 hover:border-cyan-700/50'
               }`}
             >
+              {isSelected && <div className="absolute top-0 left-0 w-full h-1 bg-cyan-400"></div>}
               <div className="flex items-center gap-2">
-                <Icon className={`w-4 h-4 ${isSelected ? 'text-indigo-400' : 'text-slate-500'}`} />
-                <span className="font-semibold text-xs text-slate-200 truncate">{g.title}</span>
+                <Icon className={`w-4 h-4 ${isSelected ? 'text-yellow-400' : 'text-cyan-700'}`} />
+                <span className="font-bold text-xs uppercase tracking-wider">{g.title}</span>
               </div>
-              <span className="text-[10px] text-slate-400 truncate">{g.badge}</span>
+              <span className={`text-[10px] font-mono truncate ${isSelected ? 'text-fuchsia-400' : 'text-cyan-700'}`}>{g.badge}</span>
             </button>
           );
         })}
@@ -201,32 +202,32 @@ export function PlatformGuide() {
         {currentGuide.steps.map((step, idx) => (
           <div
             key={step.stepNumber}
-            className="bg-slate-950/70 border border-slate-800 rounded-lg p-4 space-y-2.5"
+            className="bg-black/40 border border-cyan-900/30 rounded p-4 space-y-3 relative overflow-hidden hover:border-cyan-500/30 transition-colors"
           >
-            <div className="flex items-center gap-2.5">
-              <span className="flex items-center justify-center w-6 h-6 rounded-full bg-indigo-500/20 border border-indigo-500/40 text-indigo-300 font-mono text-xs font-bold">
+            <div className="flex items-center gap-3">
+              <span className="flex items-center justify-center w-6 h-6 rounded bg-yellow-400 text-black font-mono text-xs font-bold shadow-[0_0_10px_rgba(250,204,21,0.5)]">
                 {step.stepNumber}
               </span>
-              <h4 className="text-sm font-semibold text-slate-200">{step.title}</h4>
+              <h4 className="text-sm font-bold text-cyan-300 tracking-wide">{step.title}</h4>
             </div>
 
-            <p className="text-xs text-slate-400 leading-relaxed pl-8.5">{step.description}</p>
+            <p className="text-sm text-cyan-100/80 leading-relaxed pl-9">{step.description}</p>
 
             {step.command && (
-              <div className="pl-8.5">
-                <div className="relative bg-slate-900 border border-slate-800 rounded-md p-3 group">
-                  <pre className="font-mono text-xs text-emerald-300 overflow-x-auto whitespace-pre leading-relaxed pr-8">
+              <div className="pl-9">
+                <div className="relative bg-[#09090b] border border-cyan-900/50 rounded p-3 group shadow-inner">
+                  <pre className="font-mono text-[11px] text-fuchsia-300 overflow-x-auto whitespace-pre leading-relaxed pr-8">
                     {step.command}
                   </pre>
                   <button
                     onClick={() => handleCopy(step.command!, idx)}
-                    className="absolute top-2.5 right-2.5 p-1.5 bg-slate-800 hover:bg-slate-700 text-slate-300 rounded text-xs transition-colors border border-slate-700 cursor-pointer"
+                    className="absolute top-2.5 right-2.5 p-1.5 bg-black/60 hover:bg-cyan-950 text-cyan-400 rounded text-xs transition-colors border border-cyan-900 cursor-pointer hover:shadow-[0_0_8px_rgba(34,211,238,0.4)]"
                     title="コマンドをコピー"
                   >
                     {copiedIndex === idx ? (
-                      <Check className="w-3.5 h-3.5 text-emerald-400" />
+                      <Check className="w-4 h-4 text-yellow-400" />
                     ) : (
-                      <Copy className="w-3.5 h-3.5" />
+                      <Copy className="w-4 h-4" />
                     )}
                   </button>
                 </div>
@@ -234,8 +235,9 @@ export function PlatformGuide() {
             )}
 
             {step.note && (
-              <div className="pl-8.5 text-[11px] text-amber-300/90 flex items-center gap-1.5">
-                <span>💡 {step.note}</span>
+              <div className="pl-9 text-xs text-yellow-400/90 flex items-start gap-1.5 font-mono">
+                <span className="mt-0.5">⚠️</span>
+                <span className="leading-relaxed">{step.note}</span>
               </div>
             )}
           </div>
