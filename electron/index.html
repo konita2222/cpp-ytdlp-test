@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <meta charset="UTF-8">
+  <title>Nextzz YouTube Downloader</title>
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+  <div class="container">
+    <header>
+      <h1>Nextzz Downloader</h1>
+      <span class="badge">Electron Edition</span>
+    </header>
+    <div class="input-group">
+      <input type="text" id="url-input" placeholder="https://www.youtube.com/watch?v=...">
+    </div>
+    <div class="options-group">
+      <div class="option-item">
+        <label>フォーマット</label>
+        <select id="mode-select">
+          <option value="video">動画 (Video)</option>
+          <option value="audio">音声 (Audio)</option>
+        </select>
+      </div>
+      <div class="option-item">
+        <label>品質設定</label>
+        <select id="quality-select">
+          <option value="best">最高画質</option>
+          <option value="1080p">1080p</option>
+          <option value="720p">720p</option>
+        </select>
+      </div>
+    </div>
+    <div class="input-group flex-row">
+      <input type="text" id="output-folder" readonly placeholder="保存先フォルダを選択...">
+      <button id="btn-folder" class="btn-secondary">選択</button>
+    </div>
+    <div class="progress-container">
+      <div class="progress-bar-bg">
+        <div id="progress-fill" class="progress-fill"></div>
+      </div>
+      <div id="status-text" class="status-text">待機中</div>
+    </div>
+    <button id="btn-download" class="btn-primary">ダウンロード開始</button>
+  </div>
+  <script src="renderer.js"></script>
+</body>
+</html>
