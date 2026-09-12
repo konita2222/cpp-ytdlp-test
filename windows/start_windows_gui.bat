@@ -17,7 +17,9 @@ if "%CSC_PATH%"=="" (
     exit /b
 )
 
-"%CSC_PATH%" /nologo /target:winexe /out:NextzzDownloader.exe Program.cs
+echo Using compiler: %CSC_PATH%
+"%CSC_PATH%" /nologo /target:winexe /r:System.Windows.Forms.dll /r:System.Drawing.dll /out:NextzzDownloader.exe Program.cs
+
 if %ERRORLEVEL% NEQ 0 (
     echo [ERROR] Compilation failed.
     pause
