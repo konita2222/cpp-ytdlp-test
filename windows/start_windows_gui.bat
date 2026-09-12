@@ -1,10 +1,9 @@
 @echo off
-chcp 65001 >nul
 title Nextzz YouTube Downloader Setup
 
 cd /d "%~dp0"
 
-echo [Nextzz Software] C# Native GUI コンパイル中...
+echo [Nextzz Software] Compiling C# Native GUI...
 echo ==================================================
 
 set CSC_PATH=
@@ -13,18 +12,18 @@ for /d %%d in (%WINDIR%\Microsoft.NET\Framework\v4.*) do (
 )
 
 if "%CSC_PATH%"=="" (
-    echo [エラー] C#コンパイラ (csc.exe) が見つかりません。
+    echo [ERROR] C# Compiler (csc.exe) not found.
     pause
     exit /b
 )
 
 "%CSC_PATH%" /nologo /target:winexe /out:NextzzDownloader.exe Program.cs
 if %ERRORLEVEL% NEQ 0 (
-    echo [エラー] コンパイルに失敗しました。
+    echo [ERROR] Compilation failed.
     pause
     exit /b
 )
 
 echo.
-echo [完了] NextzzDownloader.exe を作成しました。起動します...
+echo [SUCCESS] NextzzDownloader.exe created. Starting app...
 start "" NextzzDownloader.exe

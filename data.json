@@ -9,7 +9,7 @@
   },
   {
     "path": "windows/start_windows_gui.bat",
-    "content": "@echo off\nchcp 65001 >nul\ntitle Nextzz YouTube Downloader Setup\n\ncd /d \"%~dp0\"\n\necho [Nextzz Software] C# Native GUI コンパイル中...\necho ==================================================\n\nset CSC_PATH=\nfor /d %%d in (%WINDIR%\\Microsoft.NET\\Framework\\v4.*) do (\n    if exist \"%%d\\csc.exe\" set \"CSC_PATH=%%d\\csc.exe\"\n)\n\nif \"%CSC_PATH%\"==\"\" (\n    echo [エラー] C#コンパイラ (csc.exe) が見つかりません。\n    pause\n    exit /b\n)\n\n\"%CSC_PATH%\" /nologo /target:winexe /out:NextzzDownloader.exe Program.cs\nif %ERRORLEVEL% NEQ 0 (\n    echo [エラー] コンパイルに失敗しました。\n    pause\n    exit /b\n)\n\necho.\necho [完了] NextzzDownloader.exe を作成しました。起動します...\nstart \"\" NextzzDownloader.exe\n"
+    "content": "@echo off\r\ntitle Nextzz YouTube Downloader Setup\r\n\r\ncd /d \"%~dp0\"\r\n\r\necho [Nextzz Software] Compiling C# Native GUI...\r\necho ==================================================\r\n\r\nset CSC_PATH=\r\nfor /d %%d in (%WINDIR%\\Microsoft.NET\\Framework\\v4.*) do (\r\n    if exist \"%%d\\csc.exe\" set \"CSC_PATH=%%d\\csc.exe\"\r\n)\r\n\r\nif \"%CSC_PATH%\"==\"\" (\r\n    echo [ERROR] C# Compiler (csc.exe) not found.\r\n    pause\r\n    exit /b\r\n)\r\n\r\n\"%CSC_PATH%\" /nologo /target:winexe /out:NextzzDownloader.exe Program.cs\r\nif %ERRORLEVEL% NEQ 0 (\r\n    echo [ERROR] Compilation failed.\r\n    pause\r\n    exit /b\r\n)\r\n\r\necho.\r\necho [SUCCESS] NextzzDownloader.exe created. Starting app...\r\nstart \"\" NextzzDownloader.exe\r\n"
   },
   {
     "path": "linux/app.py",
