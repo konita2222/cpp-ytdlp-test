@@ -1,0 +1,8 @@
+Package: nextzz-downloader
+Version: 1.0.0
+Section: utils
+Priority: optional
+Architecture: all
+Depends: python3, python3-pyqt6, yt-dlp, ffmpeg
+Maintainer: Nextzz Software
+Description: Lightweight YouTube Downloader powered by PyQt and yt-dlp

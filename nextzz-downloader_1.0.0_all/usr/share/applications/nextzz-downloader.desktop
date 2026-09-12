@@ -1,0 +1,6 @@
+[Desktop Entry]
+Name=Nextzz YouTube Downloader
+Exec=nextzz-downloader
+Type=Application
+Categories=Utility;AudioVideo;
+Terminal=false
